@@ -10,9 +10,8 @@ DAColor is a dual-task model for categorical color recommendation. This reposito
 - `data/colorbrewer.txt`: source RGB palette.
 - `data/source_manifest.json`: dataset counts and checksums.
 - `dacolor/`: data preparation, color conversion, model, training, evaluation, and inference code.
-- `scripts/`: five-fold training and validation-selected DAColor pipeline.
 
-Generated datasets, checkpoints, and experiment outputs are excluded from Git and can be reproduced with the commands below.
+Generated datasets, checkpoints, and training outputs are excluded from Git and can be reproduced with the commands below.
 
 ## Installation
 
@@ -67,13 +66,3 @@ python -m dacolor.infer \
   --target-scheme-size 5 \
   --top-k 10
 ```
-
-## Run the five-fold pipeline
-
-The complete five-fold training and validation-selection workflow can be launched with one command:
-
-```bash
-python scripts/run_best_pipeline.py --device auto
-```
-
-Use `--force` to retrain folds whose outputs already exist.
