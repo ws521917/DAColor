@@ -2,16 +2,6 @@
 
 This private research repository contains only the DAColor implementation and its source color-scheme dataset. Baseline implementations, baseline outputs, old checkpoints, and exploratory tracks are intentionally excluded.
 
-## Final version
-
-The current best version is **DAColor-Hierarchical**:
-
-- q1/q2 combine the corrected DAColor neural score with a validation-selected high-order co-occurrence prior;
-- q3 uses hierarchical backoff from individual-color pairs to two-color query subsets and then the exact three-color query;
-- all mixing weights are selected using validation MRR inside each fold.
-
-The five-fold overall metrics are Acc@1 0.19706, Acc@5 0.42016, Acc@10 0.53385, and MRR 0.31184. The compact fold records and selected weights are stored in `results/dacolor_final_cv_summary.json`.
-
 ## Dataset
 
 - 25,040 color schemes in `data/data.txt`;
