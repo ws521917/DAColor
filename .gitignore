@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environments and editors
+.venv/
+venv/
+.conda/
+.idea/
+.vscode/
+.DS_Store
+._*
+
+# Generated datasets
+data/processed*/
+data/cv5*/
+
+# Training artifacts
+*.pt
+*.pth
+*.ckpt
+*.log
+
+# Generated experiment outputs
+outputs/

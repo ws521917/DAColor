@@ -1,0 +1,3 @@
+# Preserve authoritative dataset bytes exactly as released.
+data/data.txt binary
+data/colorbrewer.txt binary

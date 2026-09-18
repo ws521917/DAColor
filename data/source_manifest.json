@@ -1,0 +1,22 @@
+{
+  "source_directory": "external color-matching dataset artifact",
+  "data_file": {
+    "repository_path": "data/data.txt",
+    "source_name": "data.txt",
+    "sha256": "f82f7e863107c78406996dd95d235f285dcd3917e413b5818443b579d6612d7e",
+    "scheme_count": 25040
+  },
+  "palette_file": {
+    "repository_path": "data/colorbrewer.txt",
+    "source_name": "colorbrewer.txt",
+    "normalized_lf_sha256": "44aa1f605ab72ec3bd63c41c2918f659adf3bfa573c7058a69a6743393ac20a0",
+    "source_entry_count": 162,
+    "unique_rgb_count": 151
+  },
+  "rawdata_file": {
+    "source_name": "rawdata.txt",
+    "sha256": "dbf05390cb1f2e58837a305154836a1659d2069f189dfa5aa7c13d3327b5dd0d",
+    "line_count": 25040,
+    "copied_into_repository": false
+  }
+}

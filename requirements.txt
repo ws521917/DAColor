@@ -1,0 +1,5 @@
+numpy>=1.24,<3
+torch>=2.1
+Pillow>=9
+matplotlib>=3.7
+pytest>=7
