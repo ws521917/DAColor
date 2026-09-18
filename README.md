@@ -1,64 +1,79 @@
 # DAColor
 
-This private research repository contains only the DAColor implementation and its source color-scheme dataset. Baseline implementations, baseline outputs, old checkpoints, and exploratory tracks are intentionally excluded.
+DAColor is a dual-task model for categorical color recommendation. This repository contains the dataset, the DAColor implementation, and the scripts required to train and run the model.
 
-## Dataset
+![DAColor framework](assets/dacolor_framework.png)
 
-- 25,040 color schemes in `data/data.txt`;
-- 162 source palette rows in `data/colorbrewer.txt`;
-- 151 unique RGB candidates after deduplication;
-- a source manifest with checksums in `data/source_manifest.json`.
+## Repository contents
 
-The code treats the input as 8-bit sRGB, scales it to [0,1], converts it to CIELAB using the D65 2-degree reference white `(0.95047, 1.00000, 1.08883)`, and computes CIEDE2000 with `kL=kC=kH=1`.
+- `data/data.txt`: 25,040 extracted color schemes.
+- `data/colorbrewer.txt`: source RGB palette.
+- `data/source_manifest.json`: dataset counts and checksums.
+- `dacolor/`: data preparation, color conversion, model, training, evaluation, and inference code.
+- `scripts/`: five-fold training and validation-selected DAColor pipeline.
+
+Generated datasets, checkpoints, and experiment outputs are excluded from Git and can be reproduced with the commands below.
 
 ## Installation
 
+Python 3.10 or later is required.
+
 ```bash
+git clone https://github.com/ws521917/DAColor.git
+cd DAColor
+
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[test]"
+pip install -e .
 ```
 
-## Prepare data
+## Prepare the dataset
 
-Create the corrected fixed split:
+Create the fixed training, validation, and test split together with the palette and CIEDE2000 matrix:
 
 ```bash
 python -m dacolor.prepare_data
 ```
 
-Create the deterministic five folds used by the final experiment:
+The generated files are written to `data/processed_corrected/`.
+
+## Train DAColor
+
+Train one model on the prepared split:
 
 ```bash
-python scripts/prepare_cv_folds.py
+python -m dacolor.train --device auto
 ```
 
-Generated split files are excluded from Git because they can be reproduced from the included raw records.
+`--device auto` selects CUDA when available, then Apple MPS, and otherwise CPU. The selected checkpoint and training summary are written to `outputs/dacolor_corrected/`.
 
-## Reproduce the final DAColor pipeline
+## Run inference
+
+Recommend colors from a trained checkpoint. Query colors may be canonical color IDs, palette names, hexadecimal values, or CSS color names.
+
+```bash
+python -m dacolor.infer \
+  --checkpoint outputs/dacolor_corrected/best_model.pt \
+  --query-colors 68 \
+  --top-k 10
+```
+
+To iteratively complete a larger scheme:
+
+```bash
+python -m dacolor.infer \
+  --checkpoint outputs/dacolor_corrected/best_model.pt \
+  --query-colors 68 76 \
+  --target-scheme-size 5 \
+  --top-k 10
+```
+
+## Run the five-fold pipeline
+
+The complete five-fold training and validation-selection workflow can be launched with one command:
 
 ```bash
 python scripts/run_best_pipeline.py --device auto
 ```
 
-The pipeline prepares five folds, trains one corrected mixed-query DAColor model per fold, tunes the high-order prior on validation data, applies DAColor reranking for q1/q2, applies hierarchical backoff for q3, and assembles a compact final result file.
-
-This is a computationally intensive run. Use `--force` to retrain existing fold checkpoints.
-
-## Tests
-
-```bash
-pytest -q
-```
-
-The tests cover palette provenance and deduplication, CIEDE2000 reference values, loss normalization, false-negative masking, auxiliary-task symmetry, and high-order query scoring.
-
-## Repository layout
-
-- `dacolor/`: model, training, inference, color conversion, data preparation, and priors;
-- `scripts/`: final cross-validation pipeline plus DAColor ablation and sensitivity scripts;
-- `tests/`: correctness tests;
-- `data/`: source dataset and palette;
-- `results/dacolor_final_cv_summary.json`: compact final result record.
-
-This repository contains unpublished research code. No reuse license is granted unless a license file is added later.
+Use `--force` to retrain folds whose outputs already exist.
